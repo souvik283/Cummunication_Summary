@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
       unique: [true, "Email already exsits"],
       trim: true,
       lowercase: true,
-    },
+    },  
     fullName: {
       type: String,
       required: [true, "Please provide your name"],
@@ -17,6 +17,16 @@ const userSchema = new mongoose.Schema(
         type: String,
       enum: ["Manager", "Common"],
       default: "Common",
+    },
+    employeeId: {
+      type: Number,
+      required: true,
+      trim: true
+    },
+    company:{
+      type: String,
+      trim: true,
+      required: true
     },
     password: {
       type: String,
