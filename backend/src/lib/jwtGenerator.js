@@ -6,7 +6,7 @@ export async function generateToken(user, res) {
         id: user._id,
     }
     const token = jwt.sign(payload, ENV.jwt_secret, {
-        expiresIn: "7d"
+        expiresIn: "10d"
     })
 
     res.cookie("jwt", token, {

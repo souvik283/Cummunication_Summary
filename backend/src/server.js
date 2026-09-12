@@ -3,7 +3,9 @@ import ENV from "./lib/env.js";
 import ConnectDb from "./config/connectDb.js";
 import path from "path";
 import authRoute from "./routes/auth.route.js";
-// import messageRoute from "./routes/message.route.js";
+import messageRoute from "./routes/message.route.js";
+import projectRoute from "./routes/project.route.js"
+import  channelRoute  from "./routes/channel.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -24,8 +26,9 @@ app.use(cookieParser());
 const __dirname = path.resolve();
 
 app.use("/api/auth", authRoute);
-// app.use("/api/message", messageRoute);
-
+app.use("/api/message", messageRoute);
+app.use("/api/project", projectRoute);
+app.use("/api/channel", channelRoute)
 
 const PORT = ENV.port|| 3000;
 

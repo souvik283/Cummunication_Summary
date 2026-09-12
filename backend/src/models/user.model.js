@@ -14,9 +14,10 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please provide your name"],
     },
     position:{
-        type: String,
-      enum: ["Manager", "Common"],
-      default: "Common",
+      type: String,
+      default: "developer",
+      required: true,
+      trim: true,
     },
     employeeId: {
       type: Number,

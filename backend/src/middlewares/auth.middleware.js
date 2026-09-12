@@ -46,12 +46,12 @@ export async function checkManagerLogin(req, res, next) {
       });
     }
 
-    if(userAccount.position == "Manager"){
-      req.user = userAccount;
+    if(userAccount.position.toLowerCase() == "manager" || userAccount.position.toLowerCase() == "project manager"){
+      req.user = userAccount;      
     next();
     }else{
-      res.status(400).json({
-        message: "A Project is olny created by higher authority",
+      res.status(401).json({
+        message: "Restricted Action. This action is olny handled by higher authority",
       })
     }
 

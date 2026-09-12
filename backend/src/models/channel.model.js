@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const channelSchema = new mongoose.Schema(
   {
@@ -7,14 +7,11 @@ const channelSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    projects: [ 
-      {
+    project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
       required: true,
     },
-  ],
-
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -37,5 +34,6 @@ const channelSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+const channelModel  = mongoose.model("Channel", channelSchema)
 
-module.exports = mongoose.model("Channel", channelSchema);
+export default channelModel

@@ -4,9 +4,9 @@ import bcrypt from "bcryptjs"
 
 export async function signupHandler(req, res) {
   try {
-    const { fullName, email, password, company, employeeId } = req.body;
+    const { fullName, email, password, company, employeeId, position } = req.body;
     
-    if (!fullName || !email || !password || !company || !employeeId) {
+    if (!fullName || !email || !password || !company || !employeeId || !position) {
       return res.status(400).json({
         message: "All fields are required",
       });
@@ -58,6 +58,7 @@ export async function signupHandler(req, res) {
       password: hashPassword,
       company,
       employeeId,
+      position,
     });
 
     if (newUser) {
