@@ -6,7 +6,8 @@ const ENV = {
     port: process.env.Port,
     mongoUrl: process.env.Mongo_url,
     node_environment: process.env.NODE_ENV,
-    jwt_secret: process.env.JWT_SECRET
+    jwt_secret: process.env.JWT_SECRET,
+    ollamaUrl: process.env.OLLAMA_URL,
 }
 
 export default  ENV

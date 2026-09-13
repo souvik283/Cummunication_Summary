@@ -6,6 +6,7 @@ import authRoute from "./routes/auth.route.js";
 import messageRoute from "./routes/message.route.js";
 import projectRoute from "./routes/project.route.js"
 import  channelRoute  from "./routes/channel.route.js";
+import summaryRoute from "./routes/summary.route.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -28,7 +29,8 @@ const __dirname = path.resolve();
 app.use("/api/auth", authRoute);
 app.use("/api/message", messageRoute);
 app.use("/api/project", projectRoute);
-app.use("/api/channel", channelRoute)
+app.use("/api/channel", channelRoute);
+app.use("/api/summary", summaryRoute);
 
 const PORT = ENV.port|| 3000;
 
