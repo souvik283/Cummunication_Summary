@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+
+@theme {
+  --color-ink-950: #0E1420;
+  --color-ink-900: #141C2B;
+  --color-ink-800: #1B2536;
+  --color-ink-700: #243046;
+  --color-ink-600: #324160;
+  --color-ink-500: #48587E;
+  --color-ink-400: #7688AC;
+  --color-ink-300: #A6B4CE;
+  --color-ink-200: #D3DBE8;
+  --color-ink-100: #EBEFF5;
+  --color-ink-50: #F6F8FB;
+
+  --color-paper: #FAF8F3;
+
+  --color-signal-track: #1E8E7E;
+  --color-signal-risk: #D98E2C;
+  --color-signal-blocked: #D9553F;
+
+  --font-family-display: "Space Grotesk", sans-serif;
+  --font-family-body: "Inter", sans-serif;
+  --font-family-mono: "JetBrains Mono", monospace;
+
+  --shadow-panel: 0 1px 0 rgba(14, 20, 32, 0.04);
+}
+
+@layer base {
+  * {
+    @apply border-ink-200;
+  }
+  body {
+    font-feature-settings: 'ss01' on;
+  }
+  ::selection {
+    background-color: #d3dbe8;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #d3dbe8;
+    border-radius: 999px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-rise {
+  animation: rise 0.35s ease-out both;
+}

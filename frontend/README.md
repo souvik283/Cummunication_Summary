@@ -1,16 +1,33 @@
-# React + Vite
+# Pulse — Project status, from the conversation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + Tailwind frontend for a project management tool where managers create projects, add employees, and get AI-generated status summaries pulled straight from each project's chat thread.
 
-Currently, two official plugins are available:
+## Stack
+- React 18 + React Router 6
+- Tailwind CSS
+- lucide-react icons
+- Mock API/socket layer in `src/services` (seeded, in-memory data — swap for real endpoints)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Getting started
+```bash
+npm install
+npm run dev
+```
+Then open the printed local URL. Sign in with any of the quick demo users on the login screen (one manager, four employees) — no real backend is required, everything runs on mock data.
 
-## React Compiler
+## Structure
+```
+src/
+├── components/   Navbar, Sidebar, ChatBox, Message, TaskCard, NotificationCard, SummaryCard
+├── pages/        Login, Dashboard, Project, Chat, Tasks, Settings
+├── services/     api.js (mock REST calls), socket.js (mock realtime socket)
+├── context/      AuthContext, ProjectContext
+├── App.jsx
+├── main.jsx
+└── index.css
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Notes for wiring up a real backend
+- `src/services/api.js` — every export returns a Promise already; replace the bodies with `fetch()`/`axios` calls to your API.
+- `src/services/socket.js` — swap `MockSocket` for a real `socket.io-client` instance; the `on/off/emit/connect/disconnect` interface is kept identical so call sites don't change.
+- `summarizeProject(projectId)` is where the AI summarization call belongs — point it at your summarization endpoint (e.g. one that sends recent messages to an LLM and returns `{ headline, risk, points, generatedAt }`).
