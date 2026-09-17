@@ -184,3 +184,73 @@ export async function handleRemoveMemberFromChannel(req, res) {
     });
   }
 }
+
+
+export async function handleGetChannels(req, res) {
+  try {
+    const { projectId } = req.params;
+
+    const channels = await channelModel
+      .find({ project: projectId })
+      .sort({ createdAt: 1 })
+      .populate("createdBy", "fullName email profileImg")
+      .populate("members", "fullName email profileImg");
+      ;
+
+    return res.status(200).json({
+      success: true,
+      channels
+    });
+
+  } catch (error) {
+    console.error("Get channels error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get channels",
+      error: error.message
+    });
+  }
+}
+
+export async function handleGetChannels2(req, res) {
+  try {
+    const { projectName } = req.params;
+
+    const name = projectName.replace(/-/g, " ");
+    //  console.log(name);
+
+    const project = await projectModel.findOne({
+      name
+    });
+
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found"
+      });
+    }
+
+    // console.log(project._id);
+    
+
+    const channels = await channelModel
+      .find({ project: project._id })
+      .sort({ createdAt: 1 })
+      .populate("createdBy", "fullName email profileImg")
+      .populate("members", "fullName email profileImg");
+      ;
+
+    return res.status(200).json({
+      success: true,
+      channels
+    });
+  
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+}

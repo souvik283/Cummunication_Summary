@@ -68,7 +68,7 @@ export async function handleGetMessage(req, res) {
 
     const messages = await messageModel
       .find({ channel: channelId })
-      .populate("sender", "name email avatar")
+      .populate("sender", "fullName email profileImg position")
       .populate("replyTo")
       .sort({ createdAt: 1 });
 

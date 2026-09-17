@@ -8,6 +8,7 @@ const ENV = {
     node_environment: process.env.NODE_ENV,
     jwt_secret: process.env.JWT_SECRET,
     ollamaUrl: process.env.OLLAMA_URL,
+    client_url: process.env.localhost_url,
 }
 
 export default  ENV

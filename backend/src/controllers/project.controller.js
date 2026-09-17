@@ -151,3 +151,56 @@ export async function handleDeleteMember(req, res) {
     });
   }
 }
+
+
+export async function handleGetProjects(req, res) {
+  try {
+    const userId = req.user._id;
+
+    const projects = await projectModel
+      .find({
+        $or: [
+          { owner: userId },
+          { members: userId }
+        ]
+      })
+      .populate("owner", "fullName email profileImg")
+      .populate("members", "fullName email profileImg")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      projects
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get projects",
+      error: error.message,
+    })
+  }
+}
+
+export async function handleGetProject(req, res) {
+  try {
+    const {projectId} = req.params
+    const project = await projectModel
+      .findById(projectId)
+      .populate("owner", "fullName email profileImg")
+      .populate("members", "fullName email profileImg")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      project
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get projects",
+      error: error.message,
+    })
+  }
+}

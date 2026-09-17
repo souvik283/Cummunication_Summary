@@ -2,12 +2,6 @@ import mongoose from "mongoose";
 
 const summarySchema = new mongoose.Schema(
   {
-    project: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
-      required: true,
-    },
-
     channel: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Channel",
@@ -17,29 +11,6 @@ const summarySchema = new mongoose.Schema(
     summary: {
       type: String,
       required: true,
-    },
-
-    keyPoints: [
-      {
-        type: String,
-      },
-    ],
-
-    decisions: [
-      {
-        type: String,
-      },
-    ],
-
-    actionItems: [
-      {
-        type: String,
-      },
-    ],
-
-    messageCount: {
-      type: Number,
-      default: 0,
     },
 
     generatedBy: {

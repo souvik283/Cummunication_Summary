@@ -20,9 +20,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 
-// const corsLink = ENV.node_environment === "development" ? ENV.client_url : ENV.host_web_url
+const corsLink = ENV.node_environment === "development" ? ENV.client_url : ENV.host_web_url
 
-// app.use(cors({ origin: corsLink, credentials: true }));
+app.use(cors({ origin: corsLink, credentials: true }));
 
 const __dirname = path.resolve();
 

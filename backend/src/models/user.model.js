@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
     company:{
       type: String,
       trim: true,
-      required: true
+      default: ""
     },
     password: {
       type: String,
