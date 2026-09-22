@@ -7,6 +7,23 @@ export const useChannelStore = create((set, get) => ({
   channels: [],
   selectedChannel: null,
   isGettingChannels: false,
+  isAddChannel: false,
+  isCreatingChannel: false,
+  isAddChannelMember:false,
+
+  toggleAddChannel: async () =>{
+    const {isAddChannel} = get()
+    const tf = isAddChannel ? false : true
+    await set({isAddChannel: tf})
+    // console.log(isAddProject);
+  },
+
+  toggleAddChannelMember: async () =>{
+    const {isAddChannelMember} = get()
+    const tf = isAddChannelMember ? false : true
+    await set({isAddChannelMember: tf})
+    // console.log(isAddChannelMember);
+  },
 
   setSelcetedChannel: async (channel) => {
     try {
@@ -21,46 +38,25 @@ export const useChannelStore = create((set, get) => ({
     }
   },
 
-  // getChannels: async () => {
-  
-  //   set({ isGettingChannels: true });
-  //   try {
-  //     const { selectedProject, selectedProjectId } =
-  //       useProjectStore.getState();
+   createChannel: async (data)=>{
+    set({isCreatingChannel: true})
+    const {selectedProject} = useProjectStore.getState()
+    try {
+      const res = await axiosInstance.post(`/channel/create/${selectedProject._id}`, data)
 
-  //     const projectName = location.pathname.split("/").pop();
-  //     // console.log(channelName);
-
-  //     if (selectedProject == null) {
-  //       try {
-  //         const res2 = await axiosInstance.get(`/channel/get/${projectName}`);
-  //         console.log(res2.data.channels);
-  //         set({ channels: res2.data.channels });
-  //       } catch (error) {
-  //         toast.error(`${error.response.data.message}`);
-  //       }
-  //     }else{
-
-  //     const res = await axiosInstance.get(`/channel/${selectedProjectId}`);
-  //       console.log(res.data.channels);
-  //     //   toast.success("Account Created Successfully!");
-  //     await set({ channels: res.data.channels });
-
-  //     return true;
-  //     }
-  //   } catch (error) {
-  //     console.log("Error in getting channel: ", error.reponse);
-  //     // toast.error(`${error.response.data.message}`);
-  //   } finally {
-  //     set({ isGettingChannels: false });
-  //   }
-  
-  // },
-
+      //  console.log(res.data);
+        toast.success("Channel Created Successfully!");
+    } catch (error) {
+       // console.log("Error in creating channel: ", error.response.data.error,);
+      toast.error(`${error.response.data.message}`);
+    }finally{
+      set({isCreatingChannel: false})
+    }
+  },
   
   getChannels: async () => {
   set({ isGettingChannels: true });
-
+    const {setSelcetedProject} = useProjectStore.getState()
   try {
     const projectName = window.location.pathname.split("/").pop();
 
@@ -75,6 +71,7 @@ export const useChannelStore = create((set, get) => ({
     set({
       channels: res.data.channels,
     });
+    setSelcetedProject(res.data.project)
 
     return true;
 

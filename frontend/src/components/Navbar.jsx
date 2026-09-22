@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Link } from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
+import { useProjectStore } from "../store/useProjectStore";
+import { useChannelStore } from "../store/useChannelStore";
 
 const Navbar = () => {
-const { authUser, logout, checkAuth } = useAuthStore();
-  // useEffect(()=>{
-  //   checkAuth()
-  // },[checkAuth])
+const { authUser, logout, checkAuth, isAdmin} = useAuthStore();
+  const {toggleAddProject} = useProjectStore()
+  const {toggleAddChannel} = useChannelStore()
+  const {selectedProject} = useProjectStore()
   
   const initial = authUser?.user.fullName?.[0]?.toUpperCase() || "U";
 
@@ -25,10 +27,17 @@ const { authUser, logout, checkAuth } = useAuthStore();
   }, []);
 
   function handleLogout() {
-     logout()    
-    
+     logout()      
   }
 
+  if (!authUser) {
+    return(
+      <div>loading....</div>
+    )
+  }
+  const location = useLocation()
+//  console.log(location.pathname);
+ 
   return (
     <header
       className="sticky top-0 z-20 flex items-center justify-between px-6 sm:px-10 py-4"
@@ -39,23 +48,24 @@ const { authUser, logout, checkAuth } = useAuthStore();
           className="w-2.5 h-2.5 rounded-full"
           style={{ background: "#FF6B4A" }}
         />
-        <span
+        <Link
           className="text-lg"
           style={{ fontFamily: "'Fraunces', serif", color: "#F4F1EC" }}
+          to={"/dashboard"}
         >
-          Brifely
-        </span>
+          BrieflyAI
+        </Link>
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Add new project */}
+       
 
-        {authUser?.user.position.toLowerCase()=="project manager" || authUser?.user.position.toLowerCase()=="manager" || authUser?.user.position.toLowerCase()=="hr" ?
+        {isAdmin && location.pathname == "/dashboard" ?
         
         <button
           type="button"
           onClick={() => {
-            /* TODO: open new-project modal/flow */
+            toggleAddProject()
           }}
           className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold transition-colors hover:opacity-90"
           style={{ background: "#FF6B4A", color: "#1A0F0B" }}
@@ -73,6 +83,34 @@ const { authUser, logout, checkAuth } = useAuthStore();
             <path d="M12 5v14M5 12h14" />
           </svg>
           <span className="hidden sm:inline cursor-pointer">Add new project</span>
+        </button>
+        :
+        null
+      }
+
+      {isAdmin && location.pathname == `/channel/${selectedProject?.name}` ?
+        
+        <button
+          type="button"
+          onClick={() => {
+            toggleAddChannel()
+          }}
+          className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold transition-colors hover:opacity-90"
+          style={{ background: "#FF6B4A", color: "#1A0F0B" }}
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#1A0F0B"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          <span className="hidden sm:inline cursor-pointer">Add new channel</span>
         </button>
         :
         null

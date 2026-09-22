@@ -59,7 +59,7 @@ const HomePage = () => {
               className="text-lg"
               style={{ fontFamily: "'Fraunces', serif", color: "#F4F1EC" }}
             >
-              Briefly
+              BrieflyAI
             </span>
           </div>
           <Link

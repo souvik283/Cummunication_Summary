@@ -68,10 +68,10 @@ export const useSummaryStore = create((set, get) => ({
     return true;
 
   } catch (error) {
-    console.log(
-      "Error in getting channels:",
-      error.response?.data || error.message
-    );
+    // console.log(
+    //   "Error in getting channels:",
+    //   error.response?.data || error.message
+    // );
 
     toast.error(
       error.response?.data?.message || "Failed to get channels"

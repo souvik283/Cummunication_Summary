@@ -1,5 +1,6 @@
 import React from "react";
 import { useChannelStore } from "../../store/useChannelStore";
+import ChannelMember from "./ChannelMember";
 
 const ChannelHeader = ({ onToggleSummary, summaryOpen }) => {
   const {selectedChannel} = useChannelStore()
@@ -29,19 +30,7 @@ const ChannelHeader = ({ onToggleSummary, summaryOpen }) => {
       </div>
 
       <div className="flex items-center gap-3 shrink-0">
-        <div className="hidden sm:flex -space-x-2">
-          {selectedChannel.members.map((member, i) => (
-            <span
-              key={i}
-              title={member.fullName}
-              className="flex items-center cursor-pointer justify-center w-7 h-7 rounded-full text-xs font-semibold border-2"
-              style={{ background: "#773567", color: "#FFFFFF", borderColor: "#FFFFFF" }}
-            >
-              {member.fullName?.[0].toUpperCase()}
-              
-            </span>
-          ))}
-        </div>
+        <ChannelMember/>
 
         <button
           type="button"
@@ -60,6 +49,7 @@ const ChannelHeader = ({ onToggleSummary, summaryOpen }) => {
           </svg>
           AI Summary
         </button>
+
       </div>
     </div>
   );

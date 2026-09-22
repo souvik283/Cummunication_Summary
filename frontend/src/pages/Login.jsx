@@ -198,7 +198,7 @@ const LoginPage = () => {
               />
 
               <input
-                type="text"
+                type="number"
                 value={formData.employeeId}
                 onChange={(e) => {
                   setFormData({ ...formData, employeeId: e.target.value });

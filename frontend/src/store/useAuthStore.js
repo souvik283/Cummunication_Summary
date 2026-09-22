@@ -13,6 +13,8 @@ export const useAuthStore = create((set, get) => ({
   isSignUP: false,
   isLoggingIn: false,
   regUser: null,
+  isAdmin: false,
+                  
   socket: null,
   onlineUsers: [],
 
@@ -22,6 +24,11 @@ export const useAuthStore = create((set, get) => ({
       console.log(res.data);
       
       set({ authUser: res.data });
+     if(res.data.user.position.toLowerCase() == "project manager" ||
+                  res.data.user.position.toLowerCase() == "manager" ||
+                  res.data.user.position.toLowerCase() == "hr"){
+                    set({isAdmin: true})
+                  }
       // get().connectSocket()      
       
     } catch (error) {
@@ -40,10 +47,10 @@ export const useAuthStore = create((set, get) => ({
       const res = await axiosInstance.post("/auth/signup", data);
       // console.log(res.data.userNew);
       toast.success("Account Created Successfully!");
-      set({ regUser: res.data.userNew });
+      // set({ regUser: res.data.userNew });
       return true;
     } catch (error) {
-    //   console.log("Error in Signing Up: ", error.response.data.message,);
+      console.log("Error in Signing Up: ", error.response.data.message,);
       toast.error(`${error.response.data.message}`);
     } finally {
       set({ isSignUP: false });
@@ -57,12 +64,13 @@ export const useAuthStore = create((set, get) => ({
       const res = await axiosInstance.post("/auth/signin", data);
       set({ isCheckingAuth: true });
       toast.success("Logged In Successfully!");
-      await set({ authUser: res.data });
-
+      const {checkAuth} = get()
+      // await set({ authUser: res.data });
+      await checkAuth()
       setTimeout(() => {
         set({ isCheckingAuth: false });
       }, 300);
-      get().connectSocket();
+      // get().connectSocket();
       return true;
     } catch (error) {
       // console.log(error);
@@ -78,7 +86,7 @@ export const useAuthStore = create((set, get) => ({
       set({ isCheckingAuth: true });
       toast.success("Logged Out Successfully!");
       set({ authUser: null });
-      get().disconnectSocket()
+      // get().disconnectSocket()
       setTimeout(() => {
         set({ isCheckingAuth: false });
       }, 300);

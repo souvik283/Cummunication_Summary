@@ -9,6 +9,8 @@ import { useChannelStore } from "../store/useChannelStore";
 import { useProjectStore } from "../store/useProjectStore";
 import { UseMessageStore } from "../store/useMessageStore";
 import { useSummaryStore } from "../store/useSummaryStore";
+import CreateChannelPopuup from "../components/channel/CreateChannelPopuup";
+import ChannelPopupMembers from "../components/channel/ChannelPopupMembers";
 
 const initialChannels = {
   "full-stack": {
@@ -123,13 +125,13 @@ const initialChannels = {
 };
 
 const ChannelsPage = () => {
-  const {getChannels, selectedChannel} = useChannelStore()
+  const {getChannels, selectedChannel, isAddChannel, isAddChannelMember} = useChannelStore()
   const {messages, sendMessage} = UseMessageStore()
   const {genarateSummary} = useSummaryStore()
 
   
   const [channels2, setChannels] = useState(initialChannels);
-  const [activeChannelId, setActiveChannelId] = useState("full-stack");
+  const [activeChannelId, setActiveChannelId] = useState("");
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -165,6 +167,12 @@ const ChannelsPage = () => {
       />
 
       <Navbar />
+      {isAddChannelMember ? 
+      <ChannelPopupMembers/>
+      :
+      null}
+
+      {isAddChannel ? <CreateChannelPopuup/> : null}
 
       <div className="flex flex-1 min-h-0 flex-col sm:flex-row">
         <ChannelSidebar
@@ -176,9 +184,6 @@ const ChannelsPage = () => {
 
         <div className="flex-1 flex flex-col min-w-0">
           <ChannelHeader
-            name={activeChannel.name}
-            description={activeChannel.description}
-            members={activeChannel.members}
             summaryOpen={summaryOpen}
             onToggleSummary={() => setSummaryOpen((v) => !v)}
           />
@@ -194,8 +199,7 @@ const ChannelsPage = () => {
 
         
               <MessageBubble  />
-            
-          
+  
 
          {selectedChannel ?  <StatusComposer  channelName={activeChannel.name} /> : null }
         </div>

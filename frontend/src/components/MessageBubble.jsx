@@ -31,8 +31,8 @@ const MessageBubble = () => {
 
   return (
     <div className="flex-1 min-h-[23vh] overflow-y-auto px-6 py-5 flex flex-col gap-5">
-      {console.log(messages)
-      }
+      {/* {console.log(messages)
+      } */}
       {messages.map((m) => (
         <div key={m._id} className={`flex gap-3 ${m.sender._id == authUser.user._id ? "justify-end" : "justify-start"}`}>
           <span
