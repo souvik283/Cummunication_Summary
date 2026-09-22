@@ -1,5 +1,5 @@
 import projectModel from "../models/project.model.js";
-
+import userModel from "../models/user.model.js"
 // Create a new project
 export async function handleProjectCreation(req, res) {
   try {
@@ -10,6 +10,14 @@ export async function handleProjectCreation(req, res) {
         success: false,
         message: "Project name is required",
       });
+    }
+
+    const isExists = await projectModel.findOne({name: name.trim()})
+    if (isExists) {
+      return res.status(400).json({
+        success: false,
+        message: "Project name is already exists",
+      })
     }
 
     const ownerId = req.user._id;
@@ -50,14 +58,28 @@ export async function handleProjectCreation(req, res) {
 export async function handleAddMember(req, res) {
   try {
     const { projectId } = req.params;
-    const { newMembers } = req.body;
+    const { email } = req.body;
 
-    // Validate newMembers
-    if (!Array.isArray(newMembers) || newMembers.length === 0) {
+    // if (!Array.isArray(newMembers) || newMembers.length === 0) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Please provide at least one member",
+    //   });
+    // }
+    if (!email) {
       return res.status(400).json({
         success: false,
-        message: "Please provide at least one member",
-      });
+        message: "Please provide the email",
+      })
+    }
+
+    const newMember = await userModel.findOne({email: email})
+
+    if (!newMember) {
+      return res.status(400).json({
+        success: false,
+        message: "No user found with this email",
+      })
     }
 
     // Add members without creating duplicates
@@ -66,9 +88,7 @@ export async function handleAddMember(req, res) {
         projectId,
         {
           $addToSet: {
-            members: {
-              $each: newMembers,
-            },
+            members: newMember._id,
           },
         },
         {
@@ -109,7 +129,7 @@ export async function handleDeleteMember(req, res) {
     if (!Array.isArray(deleteMembers) || deleteMembers.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "Please provide at least one member",
+        message: "Please provide the member",
       });
     }
 
@@ -151,7 +171,6 @@ export async function handleDeleteMember(req, res) {
     });
   }
 }
-
 
 export async function handleGetProjects(req, res) {
   try {
@@ -202,5 +221,38 @@ export async function handleGetProject(req, res) {
       message: "Failed to get projects",
       error: error.message,
     })
+  }
+}
+
+export async function handleGetNonProjectMember(req, res) {
+  try {
+    const { projectId } = req.params;
+
+    const project = await projectModel.findById(projectId).select("members");
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    const users = await userModel
+      .find({
+        _id: { $nin: project.members },
+      })
+      .select("fullName email profileImg");
+
+    return res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    console.error("Error getting non-project members:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 }

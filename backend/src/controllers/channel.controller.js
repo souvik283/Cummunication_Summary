@@ -1,5 +1,6 @@
 import channelModel from "../models/channel.model.js";
 import projectModel from "../models/project.model.js";
+import userModel from "../models/user.model.js";
 import mongoose from "mongoose";
 
 export async function handleCreateChannel(req, res) {
@@ -185,7 +186,6 @@ export async function handleRemoveMemberFromChannel(req, res) {
   }
 }
 
-
 export async function handleGetChannels(req, res) {
   try {
     const { projectId } = req.params;
@@ -195,20 +195,17 @@ export async function handleGetChannels(req, res) {
       .sort({ createdAt: 1 })
       .populate("createdBy", "fullName email profileImg")
       .populate("members", "fullName email profileImg");
-      ;
-
     return res.status(200).json({
       success: true,
-      channels
+      channels,
     });
-
   } catch (error) {
     console.error("Get channels error:", error);
 
     return res.status(500).json({
       success: false,
       message: "Failed to get channels",
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -216,41 +213,101 @@ export async function handleGetChannels(req, res) {
 export async function handleGetChannels2(req, res) {
   try {
     const { projectName } = req.params;
-
+    const userId = req.user._id;
     const name = projectName.replace(/-/g, " ");
     //  console.log(name);
 
-    const project = await projectModel.findOne({
-      name
-    });
-
+    const project = await projectModel
+      .findOne({
+        name,
+      })
+      .populate("owner", "fullName email profileImg")
+      .populate("members", "fullName email profileImg");
 
     if (!project) {
       return res.status(404).json({
         success: false,
-        message: "Project not found"
+        message: "Project not found",
       });
     }
 
     // console.log(project._id);
-    
 
     const channels = await channelModel
-      .find({ project: project._id })
+      .find({ project: project._id, members: userId })
       .sort({ createdAt: 1 })
       .populate("createdBy", "fullName email profileImg")
       .populate("members", "fullName email profileImg");
-      ;
-
     return res.status(200).json({
       success: true,
-      channels
+      channels,
+      project
     });
-  
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
+    });
+  }
+}
+
+
+export async function handleGetNonChannelMember(req, res) {
+  try {
+    const { channelId } = req.params;
+    const {projectId} = req.body;
+
+    const project = await projectModel
+      .findById(projectId)
+      .select("members");
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    const channel = await channelModel
+      .findById(channelId)
+      .select("members project");
+
+    if (!channel) {
+      return res.status(404).json({
+        success: false,
+        message: "Channel not found",
+      });
+    }
+
+    if (channel.project.toString() !== projectId) {
+      return res.status(400).json({
+        success: false,
+        message: "Channel does not belong to this project",
+      });
+    }
+
+    const channelMemberIds = channel.members;
+
+    // Get project members who are NOT in the channel
+    const users = await userModel
+      .find({
+        _id: {
+          $in: project.members,
+          $nin: channelMemberIds,
+        },
+      })
+      .select("fullName email profileImg");
+
+    return res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    console.error("Error getting non-channel members:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
     });
   }
 }
